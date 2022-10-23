@@ -1,119 +1,101 @@
-<script>
-        if (!location.search) {
-            location.href = 'https://ditu.amap.com/';
-        };
-<script type="text/javascript">
-        window._AMapSecurityConfig = {
-            securityJsCode:'d56b15e968196df4aa5b5effd9e44592',
-        }
-</script>
-<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.14&key=a756aca93fdd4ac5cfd9591f643f9fc0"></script> <!DOCTYPE html>
-<html lang="zh">
+<!doctype html>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta http-equiv="refresh" content="60">
-<title>我在这儿</title>
-<style>
-        html,
-        body,
-        #container {
-            margin: 0;
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>轨迹回放</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <style>
+        html, body, #container {
             height: 100%;
+            width: 100%;
         }
 
-        .in {
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 200;
+        .input-card .btn{
+            margin-right: 1.2rem;
+            width: 9rem;
         }
 
-        #shijian {
-            color: #00f;
+        .input-card .btn:last-child{
+            margin-right: 0;
         }
     </style>
 </head>
 <body>
 <div id="container"></div>
-<div class="in">
-<input type="button" value="@到达我这里要多久？" id="shijian"><br><br>
+<div class="input-card">
+    <h4>轨迹回放控制</h4>
+    <div class="input-item">
+        <input type="button" class="btn" value="开始动画" id="start" onclick="startAnimation()"/>
+        <input type="button" class="btn" value="暂停动画" id="pause" onclick="pauseAnimation()"/>
+    </div>
+    <div class="input-item">
+        <input type="button" class="btn" value="继续动画" id="resume" onclick="resumeAnimation()"/>
+        <input type="button" class="btn" value="停止动画" id="stop" onclick="stopAnimation()"/>
+    </div>
 </div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=418d7318978be4764dec5f2ddc15760d"></script>
 <script>
-        let map = new AMap.Map("container");
-        let gps;
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://tsapi.amap.com/v1/track/terminal/lastpoint' + location.search + '&key=418d7318978be4764dec5f2ddc15760d&sid=670236&correction=n', true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let data = JSON.parse(xhr.responseText).data;
-                gps = data.location.split(',');
-                let gps2 = [gps];
-                let timems = data.locatetime;
-                let nowtimems = new Date().getTime();
-                timems = parseInt((nowtimems - timems) / 1000);
-                AMap.convertFrom(gps2, "gps", function (status, result) {
-                    if (result.info === "ok") {
-                        gps2 = result.locations;//gps转高德坐标
-                        let marker = new AMap.Marker({
-                            map: map,
-                            position: gps2[0]//添加点
-                        });
-                        map.setFitView();//聚焦
-                        function text() {//添加文字
-                            marker.setLabel({
-                                offset: new AMap.Pixel(0, -25),
-                                content: timems / 60 >= 1 ? parseInt(timems / 60) + '分钟前位置' : timems + '秒前位置',
-                                direction: 'right'
-                            });
-                            timems++;
-                        }
-                        text();
-                        if (timems < 60) {
-                            let runid = setInterval(function () {
-                                text();
-                                if (timems > 60) {
-                                    clearInterval(runid)
-                                };
-                            }, 1000
-                            )
-                        }
-                    }
-                });
-            }
-        }
-        xhr.send(null);
-        shijian.onclick = function () {
-            this.value = '请稍等...';
-            // 以下定位模块
-            AMap.plugin('AMap.Geolocation', function () {
-                var geolocation = new AMap.Geolocation({
-                    enableHighAccuracy: true,//是否使用高精度定位，默认:true
-                    timeout: 15000,          //超时
-                });
-                geolocation.getCurrentPosition(function (status, result) {
-                    if (status == 'complete') {
-                        let my = [result.position.lng, result.position.lat];
-                        let address = result.formattedAddress.replace('市', '市\n');
-                        // 以下路线规划
-                        AMap.plugin('AMap.Driving', function () {
-                            let driving = new AMap.Driving({
-                                policy: AMap.DrivingPolicy.LEAST_TIME//最快方式
-                            })
-                            driving.search(gps, my, function (status, result) {
-                                let fen = parseInt(result.routes[0].time / 60)
-                                fen = fen / 60 >= 1 ? parseInt(fen / 60) + '小时' + fen % 60 + '分钟' : fen + '分钟'
-                                shijian.value = '@到达我这里要多久？';
-                                alert('您的位置大概是：\n' + address + '\n\n到达您这里大概需要时间：\n' + fen)
-                            })
-                        })
-                        // 以上路线规划
-                    }
-                });
-            });
-            // 以上定位模块
-        }
-    </script>
+    var marker, lineArr = [[116.478935,39.997761],[116.478939,39.997825],[116.478912,39.998549],[116.478912,39.998549],[116.478998,39.998555],[116.478998,39.998555],[116.479282,39.99856],[116.479658,39.998528],[116.480151,39.998453],[116.480784,39.998302],[116.480784,39.998302],[116.481149,39.998184],[116.481573,39.997997],[116.481863,39.997846],[116.482072,39.997718],[116.482362,39.997718],[116.483633,39.998935],[116.48367,39.998968],[116.484648,39.999861]];
+
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [116.397428, 39.90923],
+        zoom: 17
+    });
+
+    marker = new AMap.Marker({
+        map: map,
+        position: [116.478935,39.997761],
+        icon: "https://webapi.amap.com/images/car.png",
+        offset: new AMap.Pixel(-26, -13),
+        autoRotation: true,
+        angle:-90,
+    });
+
+    // 绘制轨迹
+    var polyline = new AMap.Polyline({
+        map: map,
+        path: lineArr,
+        showDir:true,
+        strokeColor: "#28F",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
+
+    var passedPolyline = new AMap.Polyline({
+        map: map,
+        // path: lineArr,
+        strokeColor: "#AF5",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
+
+
+    marker.on('moving', function (e) {
+        passedPolyline.setPath(e.passedPath);
+    });
+
+    map.setFitView();
+
+    function startAnimation () {
+        marker.moveAlong(lineArr, 200);
+    }
+
+    function pauseAnimation () {
+        marker.pauseMove();
+    }
+
+    function resumeAnimation () {
+        marker.resumeMove();
+    }
+
+    function stopAnimation () {
+        marker.stopMove();
+    }
+</script>
 </body>
 </html>
