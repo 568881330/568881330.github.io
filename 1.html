@@ -15,7 +15,7 @@
             securityJsCode:'5c435c2ee59332695e776e349ee8582e',
         }
     </script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=9cdcb4020a50f6ecceed342a6d874c63"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=9cdcb4020a50f6ecceed342a6d874c63"></script> 
     <style>
         html,
         body,
@@ -56,7 +56,7 @@
         let map = new AMap.Map("container");
         let xhr = new XMLHttpRequest();
         let gps = {};
-        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8ea60ff5d412278b4abee4ce961b2353&sid=814696&pagesize=999', true);
+        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8aeec61b8d5e8a187ef462f912760781&sid=39156&pagesize=999', true);
         xhr.onreadystatechange = function() {
             if(xhr.readyState === 4 && xhr.status === 200) {
                 // console.log('原始数据');
@@ -171,31 +171,19 @@
             let che = new AMap.Marker({
                 map: map,
                        position: guiji[0],
-        icon: "car.png",
-        offset: new AMap.Pixel(-26, -13),
-        autoRotation: true,
-        angle:-90,
-    });
-
-    // 绘制轨迹
-    var polyline = new AMap.Polyline({
-        map: map,
-        path: lineArr,
-        showDir:true,
-        strokeColor: "#28F",  //线颜色
-        // strokeOpacity: 1,     //线透明度
-        strokeWeight: 6,      //线宽
-        // strokeStyle: "solid"  //线样式
-    });
-
-    var passedPolyline = new AMap.Polyline({
-        map: map,
-        // path: lineArr,
-        strokeColor: "#AF5",  //线颜色
-        // strokeOpacity: 1,     //线透明度
-        strokeWeight: 6,      //线宽
-        // strokeStyle: "solid"  //线样式
-    });
+                icon: "car.png",
+                // offset: new AMap.Pixel(-24, -12),//车偏移
+                offset: new AMap.Pixel(-26, -13),//人偏移
+                autoRotation: true,//移动时自动旋转
+            });
+            let passedPolyline = new AMap.Polyline({//走过的线条
+                map: map,
+                strokeColor: "#ff0",
+                strokeWeight: 2,
+            });
+            che.on('moving', function (e) {//绘制走过的线条
+                passedPolyline.setPath(e.passedPath);
+            });
             setTimeout(function(){
                 che.moveAlong(guiji,li*0.36,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
