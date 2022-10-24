@@ -57,7 +57,7 @@
         let map = new AMap.Map("container");
         let xhr = new XMLHttpRequest();
         let gps = {};
-        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8ea60ff5d412278b4abee4ce961b2353&sid=814696', true);
+        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8ea60ff5d412278b4abee4ce961b2353&sid=814696&pagesize=999', true);
         xhr.onreadystatechange = function() {
             if(xhr.readyState === 4 && xhr.status === 200) {
                 // console.log('原始数据');
