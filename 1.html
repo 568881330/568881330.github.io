@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta http-equiv="refresh" content="10">
+    <meta http-equiv="refresh" content="20">
     <title>我的轨迹(无纠偏)</title>
     <script>
         if(!location.search){
@@ -186,7 +186,7 @@
                 passedPolyline.setPath(e.passedPath);
             });
             setTimeout(function(){
-                che.moveAlong(guiji,li*5,'',true)//按照纠偏后的轨迹10秒走完
+                che.moveAlong(guiji,li*2,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
         }
         function dingwei(){
