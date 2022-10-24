@@ -10,7 +10,12 @@
             location.href='https://ditu.amap.com/';
         };
     </script>
-    <script src="https://webapi.amap.com/maps?v=1.4.14&key=47d57deacf67daf4fe68b31c3dcdc253"></script>
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode:'5c435c2ee59332695e776e349ee8582e',
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=9cdcb4020a50f6ecceed342a6d874c63"></script>
     <style>
         html,
         body,
@@ -51,7 +56,7 @@
         let map = new AMap.Map("container");
         let xhr = new XMLHttpRequest();
         let gps = {};
-        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8aeec61b8d5e8a187ef462f912760781&sid=39156&pagesize=999', true);
+        xhr.open('GET','https://tsapi.amap.com/v1/track/terminal/trsearch'+ location.search +'&key=8ea60ff5d412278b4abee4ce961b2353&sid=814696&pagesize=999', true);
         xhr.onreadystatechange = function() {
             if(xhr.readyState === 4 && xhr.status === 200) {
                 // console.log('原始数据');
