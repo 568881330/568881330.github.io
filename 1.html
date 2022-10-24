@@ -170,20 +170,32 @@
         function donghua(guiji){
             let che = new AMap.Marker({
                 map: map,
-                position: guiji[0],
-                icon: "car.png",
-                // offset: new AMap.Pixel(-24, -12),//车偏移
-                offset: new AMap.Pixel(-22, -50),//人偏移
-                // autoRotation: true,//移动时自动旋转
-            });
-            let passedPolyline = new AMap.Polyline({//走过的线条
-                map: map,
-                strokeColor: "#ff0",
-                strokeWeight: 2,
-            });
-            che.on('moving', function (e) {//绘制走过的线条
-                passedPolyline.setPath(e.passedPath);
-            });
+                       position: guiji[0],
+        icon: "car.png",
+        offset: new AMap.Pixel(-26, -13),
+        autoRotation: true,
+        angle:-90,
+    });
+
+    // 绘制轨迹
+    var polyline = new AMap.Polyline({
+        map: map,
+        path: lineArr,
+        showDir:true,
+        strokeColor: "#28F",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
+
+    var passedPolyline = new AMap.Polyline({
+        map: map,
+        // path: lineArr,
+        strokeColor: "#AF5",  //线颜色
+        // strokeOpacity: 1,     //线透明度
+        strokeWeight: 6,      //线宽
+        // strokeStyle: "solid"  //线样式
+    });
             setTimeout(function(){
                 che.moveAlong(guiji,li*0.36,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
