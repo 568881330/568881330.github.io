@@ -187,6 +187,8 @@
                 carWindow.setPosition(lastLocation);
                 setVehicleSpeedInWidowns(lastLocation);
             });
+        // 7.打开速度框
+             carWindow.open(map, marker.getPosition());
              let passedPolyline = new AMap.Polyline({//走过的线条
                 map: map,
                 strokeColor: "#ff0",
