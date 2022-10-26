@@ -141,12 +141,6 @@
             }
         }
 
-        function speedAnimation() {
-            if (!carWindow.getIsOpen()) { //判斷窗體是否顯示
-                carWindow.open(map, marker.getPosition());
-            }
-        }
-
         function startAnimation() {
             marker.moveAlong(lineArr, 1000);
         }
