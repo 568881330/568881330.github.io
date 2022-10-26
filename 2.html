@@ -176,6 +176,13 @@
                 offset: new AMap.Pixel(-26, -12),//人偏移
                 autoRotation: true,//移动时自动旋转
             });
+            
+        // 3、创建信息框
+       carWindow = new AMap.InfoWindow({
+          offset: new AMap.Pixel(6, -25),
+          content: ''
+            })
+
             let passedPolyline = new AMap.Polyline({//走过的线条
                 map: map,
                 strokeColor: "#ff0",
@@ -184,6 +191,19 @@
             che.on('moving', function (e) {//绘制走过的线条
                 passedPolyline.setPath(e.passedPath);
             });
+            
+        // 6.信息框随车辆移动
+        AMap.event.addListener(trackMarker, 'moving', (e) => {
+          var lastLocation = e.passedPath[e.passedPath.length - 1]
+          carWindow.setPosition(lastLocation)
+            //调用信息框的信息，进行对比
+         etVehicleSpeedInWidowns(lastLocation)
+            })
+        // 7.打开速度框
+        carWindow.open(map,trackMarker.getPosition())
+        // 8.地图自适应缩放
+        map.setFitView(trackMarker)
+        map.setZoom(10)
             setTimeout(function(){
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
