@@ -182,7 +182,7 @@
                 content: ""
             });
          // 6.速度框随车辆移动
-            AMap.event.addListener(che, 'moving', function (e) {
+            AMap.event.addListener(let che, 'moving', function (e) {
             let lastLocation = e.passedPath[e.passedPath.length - 1];
                 carWindow.setPosition(lastLocation);
                 setVehicleSpeedInWidowns(lastLocation);
