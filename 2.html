@@ -167,26 +167,92 @@
                 });
             });
         }
-        function donghua(guiji){
-            let che = new AMap.Marker({
-                map: map,
-                position: guiji[0],
-                icon: "car.png",
-                // offset: new AMap.Pixel(-24, -12),//车偏移
-                offset: new AMap.Pixel(-26, -12),//人偏移
-                autoRotation: true,//移动时自动旋转
-            });
-            let passedPolyline = new AMap.Polyline({//走过的线条
-                map: map,
-                strokeColor: "#ff0",
-                strokeWeight: 2,
-            });
-            che.on('moving', function (e) {//绘制走过的线条
-                passedPolyline.setPath(e.passedPath);
-            });
-            setTimeout(function(){
-                che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
-            },1000)
+ 		// 2.创建小汽车marker
+		var carMarker = new AMap.Marker({
+			map: map,
+			position: guiji[0],
+			icon: "http://webapi.amap.com/images/car.png",
+			offset: new AMap.Pixel(-26, -13),
+			autoRotation: true
+		});
+
+		// 3.创建跟速度信息展示框
+		var carWindow = new AMap.InfoWindow({
+			offset: new AMap.Pixel(6, -25),
+			content: ""
+		});
+
+		// 4.生成车辆回放轨迹
+		var pathPolyline = initializePaths(routeInfo);
+
+		// 5.车辆随轨迹移动
+		carMarker.moveAlong(pathPolyline.getPath(), 1000, function (k) {
+			return k
+		}, false);
+		
+		  // 车辆经过路线样式
+		  let lineArr = [];
+		  routeInfo.forEach((item) => {
+			lineArr.push([item.lng, item.lat]);
+		  });
+		  var passedPolyline = new AMap.Polyline({
+			map: map,
+			path: lineArr,
+			strokeColor: "#AF5", //线颜色
+			strokeOpacity: 1,     //线透明度
+			strokeWeight: 6, //线宽
+			strokeStyle: "solid"  //线样式
+		  });
+		// 6.速度框随车辆移动
+		AMap.event.addListener(carMarker, 'moving', function (e) {
+			passedPolyline.setPath(e.passedPath);
+			var lastLocation = e.passedPath[e.passedPath.length - 1];
+			carWindow.setPosition(lastLocation);
+			setVehicleSpeedInWidowns(lastLocation);
+		});
+
+		// 7.打开速度框
+		carWindow.open(map, carMarker.getPosition());
+
+		// 8.地图自适应缩放
+		map.setFitView();
+
+
+		function initializePaths(paths) {
+			var line;
+			var pathLngLatArray = new Array();
+			if (paths) {
+				for (var i = 0; i < paths.length; i++) {
+					pathLngLatArray.push(new AMap.LngLat(paths[i].lng, paths[i].lat));
+				}
+				line = new AMap.Polyline({
+					map: map,
+					path: pathLngLatArray,
+					strokeColor: 'red',
+					strokeOpacity: 0.8,
+					strokeWeight: 6,
+					strokeStyle: 'solid'
+				});
+				line.setMap(map);
+			}
+			return line;
+		}
+		function setVehicleSpeedInWidowns(lnglat) {
+			for (var i = 0; i < routeInfo.length; i++) {
+				let content = `
+					<div style="background: #000;color: #fff;padding: 8px 25px 8px 5px;font-size: 14px;">${routeInfo[i].carID}</div>
+					<div style="padding: 0 10px;line-height: 25px;font-size: 14px;">
+						<div>所在线路：${routeInfo[i].line}</div>
+						<div>所在经度：${routeInfo[i].lng}</div>
+						<div>所在纬度：${routeInfo[i].lat}</div>
+						<div>速度：${routeInfo[i].speed.toFixed(2)} KM/h</div>
+					</div>
+				`;
+				if (lnglat.distance(new AMap.LngLat(routeInfo[i].lng, routeInfo[i].lat)) < 4) {
+					carWindow.setContent(content);
+					return;
+              	}
+			} 
         }
         function dingwei(){
             shijian.value='请稍等...';
