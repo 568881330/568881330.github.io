@@ -176,50 +176,20 @@
                 offset: new AMap.Pixel(-26, -12),//人偏移
                 autoRotation: true,//移动时自动旋转
             });
-		// 3.创建跟速度信息展示框
-		    var carWindow = new AMap.InfoWindow({
-			    offset: new AMap.Pixel(6, -25),
-			    content: ""
-		    });
             let passedPolyline = new AMap.Polyline({//走过的线条
                 map: map,
                 strokeColor: "#ff0",
                 strokeWeight: 2,
             });
-		// 5.车辆随轨迹移动
-		    che.moveAlong(pathPolyline.getPath(), 1000, function (k) {
-		    	return k
-	    	}, false);
             che.on('moving', function (e) {//绘制走过的线条
                 passedPolyline.setPath(e.passedPath);
             });
-		// 6.速度框随车辆移动
-	    	AMap.event.addListener(che, 'moving', function (e) {
-		    	passedPolyline.setPath(e.passedPath);
-			    var lastLocation = e.passedPath[e.passedPath.length - 1];
-			    carWindow.setPosition(lastLocation);
-			    setVehicleSpeedInWidowns(lastLocation);
-	    	});
-
-		// 7.打开速度框
-	       	carWindow.open(map, che.getPosition());
-            
+            setTimeout(function(){
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
         }
-        function setVehicleSpeedInWidowns(lnglat) {
-			for (var i = 0; i < routeInfo.length; i++) {
-				let content = `
-					<div style="background: #000;color: #fff;padding: 8px 25px 8px 5px;font-size: 14px;">${routeInfo[i].carID}</div>
-					<div style="padding: 0 10px;line-height: 25px;font-size: 14px;">
-						<div>速度：${routeInfo[i].speed.toFixed(2)} KM/h</div>
-					</div>
-				`;
-				if (lnglat.distance(new AMap.LngLat(routeInfo[i].lng, routeInfo[i].lat)) < 4) {
-					carWindow.setContent(content);
-					return;
-				}
-                
+        function dingwei(){
+            shijian.value='请稍等...';
             // 以下定位模块
             AMap.plugin('AMap.Geolocation', function() {
                 let geolocation = new AMap.Geolocation({
