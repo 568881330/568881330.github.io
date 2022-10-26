@@ -132,15 +132,6 @@
         // 8.地图自适应缩放
         map.setFitView();
 
-        function setVehicleSpeedInWidowns(lnglat) {
-            for (var i = 0; i < routeInfo.length; i++) {
-                if (lnglat.lat == this.routeInfo[i].lat && lnglat.lng == this.routeInfo[i].lng) {
-                    this.carWindow.setContent("速度:" + (this.routeInfo[i].speed * 3.6).toFixed(2) + "公里/时");
-                    return;
-                }
-            }
-        }
-
         function startAnimation() {
             marker.moveAlong(lineArr, 1000);
         }
