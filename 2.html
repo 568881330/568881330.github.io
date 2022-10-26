@@ -176,16 +176,6 @@
                 offset: new AMap.Pixel(-26, -12),//人偏移
                 autoRotation: true,//移动时自动旋转
             });
-            
-        // 3.创建跟速度信息展示框
-            let carWindow = new AMap.InfoWindow({
-                offset: new AMap.Pixel(6, -25),
-                content: ""
-            });
-            
-        // 7.打开速度框
-            carWindow.open(map, marker.getPosition());
-            
             let passedPolyline = new AMap.Polyline({//走过的线条
                 map: map,
                 strokeColor: "#ff0",
