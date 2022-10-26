@@ -203,10 +203,43 @@
         carWindow.open(map,che.getPosition())
         // 8.地图自适应缩放
         map.setFitView(che)
-        map.setZoom(10)
-            setTimeout(function(){
+        map.setZoom(10) 
+          setTimeout(function(){
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
+            		function initializePaths(paths) {
+			var line;
+			var pathLngLatArray = new Array();
+			if (paths) {
+				for (var i = 0; i < paths.length; i++) {
+					pathLngLatArray.push(new AMap.LngLat(paths[i].lng, paths[i].lat));
+				}
+				line = new AMap.Polyline({
+					map: map,
+					path: pathLngLatArray,
+					strokeColor: 'red',
+					strokeOpacity: 0.8,
+					strokeWeight: 6,
+					strokeStyle: 'solid'
+				});
+				line.setMap(map);
+			}
+			return line;
+		}
+		function setVehicleSpeedInWidowns(lnglat) {
+			for (var i = 0; i < routeInfo.length; i++) {
+				let content = `
+					<div style="background: #000;color: #fff;padding: 8px 25px 8px 5px;font-size: 14px;">${routeInfo[i].carID}</div>
+					<div style="padding: 0 10px;line-height: 25px;font-size: 14px;">
+						<div>所在线路：${routeInfo[i].line}</div>
+						<div>所在经度：${routeInfo[i].lng}</div>
+						<div>所在纬度：${routeInfo[i].lat}</div>
+						<div>速度：${routeInfo[i].speed.toFixed(2)} KM/h</div>
+					</div>
+				`;
+				if (lnglat.distance(new AMap.LngLat(routeInfo[i].lng, routeInfo[i].lat)) < 4) {
+					carWindow.setContent(content);
+					return;
         }
         function dingwei(){
             shijian.value='请稍等...';
