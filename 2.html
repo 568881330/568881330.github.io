@@ -193,16 +193,16 @@
             });
             
         // 6.信息框随车辆移动
-        AMap.event.addListener(trackMarker, 'moving', (e) => {
+        AMap.event.addListener(che, 'moving', (e) => {
           var lastLocation = e.passedPath[e.passedPath.length - 1]
           carWindow.setPosition(lastLocation)
             //调用信息框的信息，进行对比
          etVehicleSpeedInWidowns(lastLocation)
             })
         // 7.打开速度框
-        carWindow.open(map,trackMarker.getPosition())
+        carWindow.open(map,che.getPosition())
         // 8.地图自适应缩放
-        map.setFitView(trackMarker)
+        map.setFitView(che)
         map.setZoom(10)
             setTimeout(function(){
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
