@@ -167,30 +167,30 @@
                 });
             });
         }
- 		// 2.创建小汽车marker
-		var carMarker = new AMap.Marker({
-			map: map,
-			position: guiji[0],
-			icon: "http://webapi.amap.com/images/car.png",
-			offset: new AMap.Pixel(-26, -13),
-			autoRotation: true
-		});
+        // 2.创建小汽车marker
+        var carMarker = new AMap.Marker({
+	    map: map,
+	    position: guiji[0],
+	    icon: "http://webapi.amap.com/images/car.png",
+	    offset: new AMap.Pixel(-26, -13),
+	    autoRotation: true
+        });
 
-		// 3.创建跟速度信息展示框
-		var carWindow = new AMap.InfoWindow({
+        // 3.创建跟速度信息展示框
+        var carWindow = new AMap.InfoWindow({
 			offset: new AMap.Pixel(6, -25),
 			content: ""
 		});
 
-		// 4.生成车辆回放轨迹
-		var pathPolyline = initializePaths(routeInfo);
+        // 4.生成车辆回放轨迹
+	   var pathPolyline = initializePaths(routeInfo);
 
-		// 5.车辆随轨迹移动
+        // 5.车辆随轨迹移动
 		carMarker.moveAlong(pathPolyline.getPath(), 1000, function (k) {
 			return k
 		}, false);
 		
-		  // 车辆经过路线样式
+        // 车辆经过路线样式
 		  let lineArr = [];
 		  routeInfo.forEach((item) => {
 			lineArr.push([item.lng, item.lat]);
@@ -203,7 +203,7 @@
 			strokeWeight: 6, //线宽
 			strokeStyle: "solid"  //线样式
 		  });
-		// 6.速度框随车辆移动
+        // 6.速度框随车辆移动
 		AMap.event.addListener(carMarker, 'moving', function (e) {
 			passedPolyline.setPath(e.passedPath);
 			var lastLocation = e.passedPath[e.passedPath.length - 1];
@@ -211,10 +211,10 @@
 			setVehicleSpeedInWidowns(lastLocation);
 		});
 
-		// 7.打开速度框
+        // 7.打开速度框
 		carWindow.open(map, carMarker.getPosition());
 
-		// 8.地图自适应缩放
+        // 8.地图自适应缩放
 		map.setFitView();
 
 
