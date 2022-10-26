@@ -182,6 +182,9 @@
             offset: new AMap.Pixel(6, -25),
             content: ""
             });
+            
+        // 7.打开速度框
+            carWindow.open(map, marker.getPosition());
             let passedPolyline = new AMap.Polyline({//走过的线条
                 map: map,
                 strokeColor: "#ff0",
