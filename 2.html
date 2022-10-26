@@ -187,14 +187,14 @@
                 strokeWeight: 2,
             });
 		// 5.车辆随轨迹移动
-		    carMarker.moveAlong(pathPolyline.getPath(), 1000, function (k) {
+		    che.moveAlong(pathPolyline.getPath(), 1000, function (k) {
 		    	return k
 	    	}, false);
             che.on('moving', function (e) {//绘制走过的线条
                 passedPolyline.setPath(e.passedPath);
             });
 		// 6.速度框随车辆移动
-	    	AMap.event.addListener(carMarker, 'moving', function (e) {
+	    	AMap.event.addListener(che, 'moving', function (e) {
 		    	passedPolyline.setPath(e.passedPath);
 			    var lastLocation = e.passedPath[e.passedPath.length - 1];
 			    carWindow.setPosition(lastLocation);
@@ -202,7 +202,7 @@
 	    	});
 
 		// 7.打开速度框
-	       	carWindow.open(map, carMarker.getPosition());
+	       	carWindow.open(map, che.getPosition());
             
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
@@ -212,9 +212,6 @@
 				let content = `
 					<div style="background: #000;color: #fff;padding: 8px 25px 8px 5px;font-size: 14px;">${routeInfo[i].carID}</div>
 					<div style="padding: 0 10px;line-height: 25px;font-size: 14px;">
-						<div>所在线路：${routeInfo[i].line}</div>
-						<div>所在经度：${routeInfo[i].lng}</div>
-						<div>所在纬度：${routeInfo[i].lat}</div>
 						<div>速度：${routeInfo[i].speed.toFixed(2)} KM/h</div>
 					</div>
 				`;
