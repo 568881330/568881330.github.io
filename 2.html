@@ -193,13 +193,13 @@
                 che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
           // 6.速度框随车辆移动
-            AMap.event.addListener(marker, 'moving', function (e) {
+            AMap.event.addListener(che, 'moving', function (e) {
              let lastLocation = e.passedPath[e.passedPath.length - 1];
              carWindow.setPosition(lastLocation);
              setVehicleSpeedInWidowns(lastLocation);
             });
           // 7.打开速度框
-          carWindow.open(map, marker.getPosition());
+          carWindow.open(map, che.getPosition());
           // 8.地图自适应缩放
           map.setFitView();
        }
@@ -214,7 +214,7 @@
 
         function speedAnimation() {
             if (!carWindow.getIsOpen()) { //判斷窗體是否顯示
-                carWindow.open(map, marker.getPosition());
+                carWindow.open(map, che.getPosition());
             }
         }
 
