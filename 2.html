@@ -200,7 +200,7 @@
             });
        }
           // 7.打开速度框
-          carWindow.open(map, che.getPosition());
+          carWindow.open(map, marker.getPosition());
           // 8.地图自适应缩放
           map.setFitView();
         function setVehicleSpeedInWidowns(lnglat) {
@@ -214,7 +214,7 @@
 
         function speedAnimation() {
             if (!carWindow.getIsOpen()) { //判斷窗體是否顯示
-                carWindow.open(map, che.getPosition());
+                carWindow.open(map, marker.getPosition());
             }
         }
 
