@@ -198,11 +198,11 @@
              carWindow.setPosition(lastLocation);
              setVehicleSpeedInWidowns(lastLocation);
             });
+       }
           // 7.打开速度框
           carWindow.open(map, che.getPosition());
           // 8.地图自适应缩放
           map.setFitView();
-       }
         function setVehicleSpeedInWidowns(lnglat) {
             for (var i = 0; i < routeInfo.length; i++) {
                 if (lnglat.lat == this.routeInfo[i].lat && lnglat.lng == this.routeInfo[i].lng) {
