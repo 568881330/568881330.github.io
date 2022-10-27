@@ -190,8 +190,6 @@
                 passedPolyline.setPath(e.passedPath);
             });
             setTimeout(function(){
-                marker.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
-            },1000)
         }
         // 6.速度框随车辆移动
             AMap.event.addListener(marker, 'moving', function (e) {
