@@ -203,7 +203,23 @@
         carWindow.open(map, marker.getPosition());
         // 8.地图自适应缩放
         map.setFitView();
-        
+        function initializePaths(paths) {
+           var line;
+           var pathLngLatArray = new Array();
+           if (paths) {
+            for (var i = 0; i < paths.length; i++) {
+                pathLngLatArray.push(new AMap.LngLat(paths[i].lng, paths[i].lat));
+            }
+            line = new AMap.Polyline({
+                map: map,
+                path: pathLngLatArray,
+                strokeColor: 'red',
+                strokeOpacity: 0.8,
+                strokeWeight: 6,
+                strokeStyle: 'solid'
+            });
+            line.setMap(map);
+        }
         function setVehicleSpeedInWidowns(lnglat) {
             for (var i = 0; i < routeInfo.length; i++) {
                 if (lnglat.lat == this.routeInfo[i].lat && lnglat.lng == this.routeInfo[i].lng) {
