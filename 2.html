@@ -144,9 +144,9 @@
                         li = result.data.distance; //里程
                         // console.log("纠偏后的对象newPath");
                         // console.log(newPath);
-                        20.value='已行驶'+ parseInt(li/1000) +'公里';
+                        gongli.value='已行驶'+ parseInt(li/1000) +'公里';
                         for (let i = 0; i < newPath.length; i++) {//对象转数组
-                            gaode3.push([newPath[i].x, newPath[i].y]);
+                        gaode3.push([newPath[i].x, newPath[i].y]);
                         }
                         gaode3.unshift(dian0);//添加原始起点
                         gaode3.push(dian1);//添加原始终点
