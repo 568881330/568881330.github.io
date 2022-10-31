@@ -9,7 +9,6 @@
         if(!location.search){
             location.href='https://ditu.amap.com/';
         };
-    </script>
     <script type="text/javascript">
         window._AMapSecurityConfig = {
             securityJsCode:'5c435c2ee59332695e776e349ee8582e',
@@ -172,8 +171,8 @@
                 map: map,
                 position: guiji[0],
                 icon: "car.png",
-                //offset: new AMap.Pixel(-26, -12),//车偏移
-                offset: new AMap.Pixel(-26, -12),//人偏移
+                offset: new AMap.Pixel(-24, -12),//车偏移
+                // offset: new AMap.Pixel(-22, -50),//人偏移
                 autoRotation: true,//移动时自动旋转
             });
             let passedPolyline = new AMap.Polyline({//走过的线条
@@ -185,7 +184,7 @@
                 passedPolyline.setPath(e.passedPath);
             });
             setTimeout(function(){
-                che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
+                che.moveAlong(guiji,li*0.36,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
         }
         function dingwei(){
