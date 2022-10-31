@@ -50,7 +50,7 @@
     <div class="in">
         <input type="button" value="暂无数据" id="shijian"><br>
         <input type="button" value="" id="xingshishijian"><br>
-        <input type="button" value="" id="20">
+        <input type="button" value="" id="gongli">
     </div>      
     <script>
         let map = new AMap.Map("container");
@@ -144,7 +144,7 @@
                         li = result.data.distance; //里程
                         // console.log("纠偏后的对象newPath");
                         // console.log(newPath);
-                        gongli.value='已行驶'+ parseInt(li/1000) +'公里';
+                        20.value='已行驶'+ parseInt(li/1000) +'公里';
                         for (let i = 0; i < newPath.length; i++) {//对象转数组
                             gaode3.push([newPath[i].x, newPath[i].y]);
                         }
