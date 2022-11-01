@@ -117,7 +117,7 @@
                 }
             });
         }
-        let li = 200;//默认公里数，会被纠偏后的公里数覆盖
+        let li = 150;//默认公里数，会被纠偏后的公里数覆盖
         function jiupian(gaode){
             let gaode2 = []; //纠偏前高德对象
             let tm0 = parseInt(gps[0].locatetime/1000);
@@ -185,7 +185,7 @@
                 passedPolyline.setPath(e.passedPath);
             });
             setTimeout(function(){
-                che.moveAlong(guiji,li*0.36,'',true)//按照纠偏后的轨迹10秒走完
+                che.moveAlong(guiji,li*0.5,'',true)//按照纠偏后的轨迹10秒走完
             },1000)
         }
         function dingwei(){
