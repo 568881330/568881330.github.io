@@ -117,7 +117,7 @@
                 }
             });
         }
-        let li = 120;//默认公里数，会被纠偏后的公里数覆盖
+        let li = 50;//默认公里数，会被纠偏后的公里数覆盖
         function jiupian(gaode){
             let gaode2 = []; //纠偏前高德对象
             let tm0 = parseInt(gps[0].locatetime/1000);
@@ -127,7 +127,7 @@
                 gaode2.push({
                     x: gaode[i].lng,
                     y: gaode[i].lat,
-                    sp: 120,
+                    sp: 50,
                     ag: 0,
                     tm: tm
                 });
@@ -144,7 +144,7 @@
                         li = result.data.distance; //里程
                         // console.log("纠偏后的对象newPath");
                         // console.log(newPath);
-                        gongli.value='已行驶'+ parseInt(li/1000) +'公里';
+                        gongli.value='已行驶'+ parseInt +'公里';
                         for (let i = 0; i < newPath.length; i++) {//对象转数组
                             gaode3.push([newPath[i].x, newPath[i].y]);
                         }
