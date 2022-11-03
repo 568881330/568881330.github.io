@@ -61,7 +61,7 @@
             if(xhr.readyState === 4 && xhr.status === 200) {
                 // console.log('原始数据');
                 // console.log(xhr.responseText);
-                if(xhr.responseText.indexOf('counts":999')>0){
+                if(xhr.responseText.indexOf('counts":0')>0){
                     alert('暂无数据');
                 }else{
                     shijian.value='@到达我这里要多久？';
