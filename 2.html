@@ -141,10 +141,10 @@
                 grasp.driving(gaode2, function(error, result) {
                     if (!error) {
                         let newPath = result.data.points; //纠偏后的轨迹
-                        li = result.data.distance; //里程
+                        li = data.distance; //里程
                         // console.log("纠偏后的对象newPath");
                         // console.log(newPath);
-                        gongli.value='已行驶'+ data.distance(li/1000) +'公里';
+                        gongli.value='已行驶'+ parseInt(li/1000) +'公里';
                         for (let i = 0; i < newPath.length; i++) {//对象转数组
                             gaode3.push([newPath[i].x, newPath[i].y]);
                         }
