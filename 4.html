@@ -109,14 +109,8 @@
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
-                        content: `
-                            <div class="avatar-container">
-                                <div class="avatar-frame">
-                                    < img class="avatar-img" src="https://q.qlogo.cn/g?b=qq&nk=${key.qq}&s=100">
-                                </div>
-                            </div>
-                        `,
-                        offset: new AMap.Pixel(-20, -20)
+                        content: "<div class=\"aa\"><img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        offset: [-10, -24]
                     });
                 });
             } else {
