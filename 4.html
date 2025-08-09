@@ -15,6 +15,7 @@
 </head>
 <body>
     <div id='container'>加载中...</div>
+    <div class="time-display" id="timeInfo"></div>
     <input type="button" value="" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
@@ -28,6 +29,7 @@
         let speed = [];
         let endtime;
         let dj = 1;
+        let marker;
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
