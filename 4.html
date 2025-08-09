@@ -57,6 +57,7 @@
         let speed = [];
         let endtime;
         let dj = 1;
+        let marker;
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
@@ -96,65 +97,64 @@
             const finishTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
             document.getElementById('timeInfo').innerHTML = `开始时间: ${startTime}<br>结束时间: ${finishTime}`;
 
-            if (key.qq) {
-                // 有QQ号就显示QQ头像
-                at = false; // 不旋转
-                AMap.plugin('AMap.MoveAnimation', function () {
+            // 延迟创建标记以确保正确显示
+            setTimeout(function() {
+                if (key.qq) {
+                    // 有QQ号就显示QQ头像
+                    at = false; // 不旋转
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
                         content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
                         offset: [-10, -24]
                     });
-                });
-            } else {
-                // 没QQ就加载小车
-                at = true; // 旋转
-                AMap.plugin('AMap.MoveAnimation', function () {
+                } else {
+                    // 没QQ就加载小车
+                    at = true; // 旋转
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
                         icon: "car.png",
                         offset: [-12, -24]
                     });
-                });
-            }
-
-            let polyline = new AMap.Polyline({
-                map: map,
-                path: guiji,
-                showDir: true,
-                strokeColor: "#00cb64",
-                strokeWeight: 8
-            });
-            map.setFitView();
-
-            let passedPolyline = new AMap.Polyline({
-                map: map,
-                strokeColor: "#e34dff",
-                strokeWeight: 2
-            });
-
-            marker.on('moving', function (e) {
-                passedPolyline.setPath(e.passedPath);
-                map.setCenter(e.passedPos);
-                if (!at && e.progress === 1) {
-                    time = new Date(1000 * loctime[e.index]).toLocaleString('zh', {hour12: false});
-                    marker.setLabel({
-                        "content": time + " " + speed[e.index].toFixed(0) + "km/h",
-                        "offset": [20, -50]
-                    });
                 }
-            });
 
-            marker.on('movealong', function () {
-                dj = 2;
-                console.log('移动结束');
-            });
+                let polyline = new AMap.Polyline({
+                    map: map,
+                    path: guiji,
+                    showDir: true,
+                    strokeColor: "#00cb64",
+                    strokeWeight: 8
+                });
+                map.setFitView();
 
-            if (guiji.length > 1) {
-                setTimeout(Go, 2000);
-            }
+                let passedPolyline = new AMap.Polyline({
+                    map: map,
+                    strokeColor: "#e34dff",
+                    strokeWeight: 2
+                });
+
+                marker.on('moving', function (e) {
+                    passedPolyline.setPath(e.passedPath);
+                    map.setCenter(e.passedPos);
+                    if (!at && e.progress === 1) {
+                        time = new Date(1000 * loctime[e.index]).toLocaleString('zh', {hour12: false});
+                        marker.setLabel({
+                            "content": time + " " + speed[e.index].toFixed(0) + "km/h",
+                            "offset": [20, -50]
+                        });
+                    }
+                });
+
+                marker.on('movealong', function () {
+                    dj = 2;
+                    console.log('移动结束');
+                });
+
+                if (guiji.length > 1) {
+                    setTimeout(Go, 2000);
+                }
+            }, 100);
         }
 
         function Go() {
