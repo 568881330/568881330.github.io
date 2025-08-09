@@ -6,22 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的轨迹(百度)</title>
     <style>
-        html, body, #container { margin: 0; height: 100%; }
-        #shijian { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 200; }
-        .aa { box-shadow: 0 0 3px 2px #A020F0; width: 20px; height: 20px; transform: rotate(45deg); }
-        .qq { position: absolute; border-radius: 20px; transform: rotate(-45deg); top: -20px; left: -20px; }
-        .time-display { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; z-index: 300; font-size: 14px; }
+        html, body, #container {
+            margin: 0;
+            height: 100%;
+        }
+        #shijian {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+            padding: 8px;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+        }
+        .aa {
+            box-shadow: 0 0 3px 2px #A020F0;
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+        }
+        .qq {
+            position: absolute;
+            border-radius: 20px;
+            transform: rotate(-45deg);
+            top: -20px;
+            left: -20px;
+        }
+        .time-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 300;
+            font-size: 14px;
+        }
+        .point-count {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 300;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
+    <div class="point-count" id="pointCount"></div>
     <input type="button" value="" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         // 生成随机参数防止缓存
         const randomParam = Date.now();
-        
         let key = JSON.parse('{"' + location.search.substr(1).replace(/\=/g, '":"').replace(/&/g, '","') + '"}');
         let pi = 1;
         let guiji = [];
@@ -31,7 +73,7 @@
         let dj = 1;
         let marker;
 
-        function BaiDu(j) {
+        function BaiDu(j) { 
             t = JSON.stringify(j.points);
             t = t.match(/(?<=de":)\d+\.\d{1,6}/g);
             let n;
@@ -58,8 +100,13 @@
         }
 
         function GaoDe() {
-            container.innerHTML = '有' + guiji.length + '个坐标点';
-            map = new AMap.Map("container", { zoom: 170, center: guiji[0] });
+            // 显示坐标点数量
+            document.getElementById('pointCount').innerHTML = '坐标点数量: ' + guiji.length;
+            
+            map = new AMap.Map("container", {
+                zoom: 17,
+                center: guiji[0]
+            });
 
             // 显示开始和结束时间
             const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
@@ -73,7 +120,7 @@
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
-                        content: "<div class=\"aa\"><img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
                         offset: [-10, -24]
                     });
                 });
@@ -128,7 +175,10 @@
         }
 
         function Go() {
-            marker.moveAlong(guiji, { duration: 50, autoRotation: at });
+            marker.moveAlong(guiji, {
+                duration: 50,
+                autoRotation: at
+            });
         }
 
         function GetData() {
@@ -160,7 +210,7 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            shijian.value = '行驶总里程：' + j + '公里，总时间：' + h + m + s;
+            shijian.value = guiji.length + '个坐标点 | 行驶总里程：' + j + '公里，总时间：' + h + m + s;
         }
 
         function Play() {
