@@ -59,7 +59,7 @@
 
         function GaoDe() {
             container.innerHTML = '有' + guiji.length + '个坐标点';
-            map = new AMap.Map("container", { zoom: 17, center: guiji[0] });
+            map = new AMap.Map("container", { zoom: 170, center: guiji[0] });
 
             // 显示开始和结束时间
             const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
