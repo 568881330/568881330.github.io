@@ -160,7 +160,10 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            shijian.value = '坐标点:' + guiji.length + '个 | 行驶总里程:' + j + '公里 | 总时间:' + h + m + s;
+            // 计算平均车速 (总里程/总时间(小时))
+            let totalHours = k / 3600;
+            let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
+            shijian.value = '坐标点:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + ' | 均速:' + avgSpeed + 'km/h';
         }
 
         function Play() {
