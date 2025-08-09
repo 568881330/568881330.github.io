@@ -9,7 +9,6 @@
         html, body, #container {
             margin: 0;
             height: 100%;
-            font-family: Arial, sans-serif;
         }
         #shijian {
             position: absolute;
@@ -17,40 +16,6 @@
             left: 0;
             width: 100%;
             z-index: 200;
-            padding: 12px 0;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            border-top: 1px solid #ddd;
-            font-size: 14px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        #shijian:hover {
-            background: rgba(245,245,245,0.9);
-        }
-        #timeInfo {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255,255,255,0.9);
-            padding: 10px 15px;
-            border-radius: 5px;
-            z-index: 200;
-            font-size: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            line-height: 1.5;
-        }
-        #pointCount {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 12px;
-            border-radius: 5px;
-            z-index: 200;
-            font-size: 13px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
         .aa {
             box-shadow: 0 0 3px 2px #A020F0;
@@ -65,256 +30,186 @@
             top: -20px;
             left: -20px;
         }
-        .car-icon {
-            width: 24px;
-            height: 24px;
+        #time-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 100;
+            font-size: 14px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
-    <div id="timeInfo"></div>
-    <div id="pointCount"></div>
-    <input type="button" value="加载轨迹数据..." id="shijian" onclick="Play()">
+    <div id="time-info"></div>
+    <input type="button" value="" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         // 生成随机参数防止缓存
         const randomParam = Date.now();
-        let key = JSON.parse('{"' + decodeURIComponent(location.search.substr(1)).replace(/\=/g, '":"').replace(/&/g, '","') + '"}');
+        let key = JSON.parse('{"' + location.search.substr(1).replace(/\=/g, '":"').replace(/&/g, '","') + '"}');
         let pi = 1;
         let guiji = [];
         let loctime = [];
         let speed = [];
         let endtime;
         let dj = 1;
-        let map, marker, at;
-
-        function formatTime(timestamp) {
-            const date = new Date(timestamp * 1000);
-            return date.getFullYear() + '-' + 
-                   (date.getMonth()+1).toString().padStart(2, '0') + '-' + 
-                   date.getDate().toString().padStart(2, '0') + ' ' + 
-                   date.getHours().toString().padStart(2, '0') + ':' + 
-                   date.getMinutes().toString().padStart(2, '0') + ':' + 
-                   date.getSeconds().toString().padStart(2, '0');
-        }
-
-        function formatDuration(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            return (h > 0 ? h + '小时' : '') + 
-                   (m > 0 ? m + '分' : '') + 
-                   (s > 0 ? s + '秒' : '');
-        }
 
         function BaiDu(j) {
-            try {
-                if (!j.points || j.points.length === 0) {
-                    container.innerHTML = '没有获取到轨迹数据';
-                    shijian.value = '没有轨迹数据';
-                    return;
-                }
-
-                const t = JSON.stringify(j.points).match(/(?<=de":)\d+\.\d{1,6}/g);
-                let n;
-                
-                for (let i = 0; i < j.points.length; i++) {
-                    guiji.push([parseFloat(t[2 * i + 1]), parseFloat(t[2 * i])]);
-                    loctime.push(j.points[i].loc_time);
-                    speed.push(j.points[i].speed || 0);
-                    
-                    if (j.points[i + 1]) {
-                        n = j.points[i + 1].loc_time - j.points[i].loc_time;
-                        if (n > key.duan) {
-                            endtime = j.points[i].loc_time;
-                            break;
-                        }
+            t = JSON.stringify(j.points);
+            t = t.match(/(?<=de":)\d+\.\d{1,6}/g);
+            let n;
+            for (let i = 0; i < j.points.length; i++) {
+                guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
+                loctime.push(j.points[i].loc_time);
+                speed.push(j.points[i].speed);
+                if (j.points[i + 1]) {
+                    n = j.points[i + 1].loc_time - j.points[i].loc_time;
+                    if (n > key.duan) {
+                        endtime = j.points[i].loc_time;
+                        break;
                     }
                 }
-
-                n = n || key.duan + 1;
-                
-                if (n > key.duan || j.end_point.loc_time === j.points[j.points.length - 1].loc_time) {
-                    endtime = endtime || j.end_point.loc_time;
-                    Getlicheng();
-                    GaoDe();
-                } else {
-                    GetData(pi++);
-                }
-            } catch (e) {
-                console.error('数据处理错误:', e);
-                container.innerHTML = '数据处理出错: ' + e.message;
+            }
+            n = n ? n : key.duan + 1;
+            if (n > key.duan || j.end_point.loc_time === j.points[j.points.length - 1].loc_time) {
+                endtime = endtime ? endtime : j.end_point.loc_time;
+                Getlicheng();
+                GaoDe();
+            } else {
+                GetData(pi++);
             }
         }
 
         function GaoDe() {
-            try {
-                container.innerHTML = '';
-                document.getElementById('pointCount').textContent = '轨迹点数: ' + guiji.length;
-                
-                map = new AMap.Map("container", {
-                    zoom: 17,
-                    center: guiji[0],
-                    viewMode: '3D'
-                });
+            container.innerHTML = '有' + guiji.length + '个坐标点';
+            map = new AMap.Map("container", {
+                zoom: 17,
+                center: guiji[0]
+            });
 
-                // 显示开始和结束时间
-                const startTime = formatTime(loctime[0]);
-                const finishTime = formatTime(loctime[loctime.length-1]);
-                document.getElementById('timeInfo').innerHTML = 
-                    `<strong>轨迹时间</strong><br>
-                     开始: ${startTime}<br>
-                     结束: ${finishTime}`;
+            // 显示开始和结束时间
+            const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
+            const endTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
+            document.getElementById('time-info').innerHTML = `开始时间: ${startTime}<br>结束时间: ${endTime}`;
 
-                if (key.qq) {
-                    // 使用QQ头像
-                    at = false;
-                    AMap.plugin('AMap.MoveAnimation', function() {
-                        marker = new AMap.Marker({
-                            map: map,
-                            position: guiji[0],
-                            content: `<div class="aa">< img class="qq" src="https://q.qlogo.cn/g?b=qq&nk=${key.qq}&s=100" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nIzAwMDAwMCc+PHBhdGggZD0iTTggMTJhMSAxIDAgMCAxIDEtMWg2YTEgMSAwIDAgMSAxIDF2M2ExIDEgMCAwIDEtMSAxaC0yYTEgMSAwIDAgMC0xIDF2MmExIDEgMCAwIDEtMSAxaC0yYTEgMSAwIDAgMS0xLTF2LTZhMSAxIDAgMCAxIDEtMXptOS03YTEgMSAwIDAgMSAxLTFoMmExIDEgMCAwIDEgMSAxdjJhMSAxIDAgMCAxLTEgMWgtMmExIDEgMCAwIDEtMS0xVjV6TTQgNWEyIDIgMCAwIDEgMi0yaDJhMiAyIDAgMCAxIDIgMnYyYTIgMiAwIDAgMS0yIDJINmEyIDIgMCAwIDEtMi0yVjV6Ii8+PC9zdmc+'"></div>`,
-                            offset: [-10, -24]
-                        });
+            if (key.qq) {
+                // 有QQ号就显示QQ头像
+                at = false; // 不旋转
+                AMap.plugin('AMap.MoveAnimation', function () {
+                    marker = new AMap.Marker({
+                        map: map,
+                        position: guiji[0],
+                        content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        offset: [-10, -24]
                     });
-                } else {
-                    // 使用小车图标
-                    at = true;
-                    AMap.plugin('AMap.MoveAnimation', function() {
-                        marker = new AMap.Marker({
-                            map: map,
-                            position: guiji[0],
-                            content: `<div class="car-icon">🚗</div>`,
-                            offset: [-12, -24]
-                        });
+                });
+            } else {
+                // 没QQ就加载小车
+                at = true; // 旋转
+                AMap.plugin('AMap.MoveAnimation', function () {
+                    marker = new AMap.Marker({
+                        map: map,
+                        position: guiji[0],
+                        icon: "car.png",
+                        offset: [-12, -24]
+                    });
+                });
+            }
+
+            let polyline = new AMap.Polyline({
+                map: map,
+                path: guiji,
+                showDir: true,
+                strokeColor: "#00cb64",
+                strokeWeight: 8
+            });
+            map.setFitView();
+
+            let passedPolyline = new AMap.Polyline({
+                map: map,
+                strokeColor: "#e34dff",
+                strokeWeight: 2
+            });
+
+            marker.on('moving', function (e) {
+                passedPolyline.setPath(e.passedPath);
+                map.setCenter(e.passedPos);
+                if (!at && e.progress === 1) {
+                    time = new Date(1000 * loctime[e.index]).toLocaleString('zh', {hour12: false});
+                    marker.setLabel({
+                        "content": time + " " + speed[e.index].toFixed(0) + "km/h",
+                        "offset": [20, -50]
                     });
                 }
+            });
 
-                // 绘制完整轨迹线
-                const polyline = new AMap.Polyline({
-                    map: map,
-                    path: guiji,
-                    showDir: true,
-                    strokeColor: "#28a745",
-                    strokeWeight: 6,
-                    strokeOpacity: 0.7
-                });
+            marker.on('movealong', function () {
+                dj = 2;
+                console.log('移动结束');
+            });
 
-                // 绘制已走过轨迹线
-                const passedPolyline = new AMap.Polyline({
-                    map: map,
-                    strokeColor: "#dc3545",
-                    strokeWeight: 4,
-                    strokeOpacity: 0.9
-                });
-
-                marker.on('moving', function(e) {
-                    passedPolyline.setPath(e.passedPath);
-                    map.setCenter(e.passedPos);
-                    if (!at && e.progress === 1) {
-                        marker.setLabel({
-                            content: formatTime(loctime[e.index]) + " " + speed[e.index].toFixed(0) + "km/h",
-                            offset: [20, -50]
-                        });
-                    }
-                });
-
-                marker.on('movealong', function() {
-                    dj = 2;
-                    shijian.value = '播放完成，点击重新播放';
-                });
-
-                map.setFitView();
-                
-                if (guiji.length > 1) {
-                    shijian.value = '点击开始播放轨迹';
-                    setTimeout(() => {
-                        map.setFitView(null, false, [50, 50, 50, 100]);
-                    }, 500);
-                } else {
-                    shijian.value = '只有一个坐标点，无法播放';
-                }
-            } catch (e) {
-                console.error('地图初始化错误:', e);
-                container.innerHTML = '地图初始化出错: ' + e.message;
+            if (guiji.length > 1) {
+                setTimeout(Go, 2000);
             }
         }
 
         function Go() {
-            if (guiji.length > 1) {
-                marker.moveAlong(guiji, {
-                    duration: 50,
-                    autoRotation: at
-                });
-            }
+            marker.moveAlong(guiji, {
+                duration: 50,
+                autoRotation: at
+            });
         }
 
         function GetData() {
-            console.log('获取云端数据第' + pi + '页');
-            const script = document.createElement('script');
-            script.src = `https://yingyan.baidu.com/api/v3/track/gettrack?callback=BaiDu&coord_type_output=gcj02&page_size=600&page_index=${pi}&${location.search.substr(1)}&nocache=${randomParam}`;
-            script.onerror = function() {
-                container.innerHTML = '加载数据失败，请检查网络或参数';
-                shijian.value = '数据加载失败';
-            };
-            document.body.appendChild(script);
-            setTimeout(() => document.body.removeChild(script), 100);
+            console.log('获取云端数据' + pi);
+            let i = document.createElement('script');
+            // 加入随机参数防止缓存
+            i.src = "https://yingyan.baidu.com/api/v3/track/gettrack?callback=BaiDu&coord_type_output=gcj02&page_size=600&page_index=" + pi + "&" + location.search.substr(1) + "&nocache=" + randomParam;
+            document.body.appendChild(i);
+            document.body.removeChild(i);
         }
+        GetData();
 
         function Getlicheng() {
             console.log('获取里程数据');
-            const script = document.createElement('script');
-            script.src = `https://yingyan.baidu.com/api/v3/track/getdistance?callback=BaiDulicheng&ak=${key.ak}&service_id=${key.service_id}&entity_name=${key.entity_name}&start_time=${key.start_time}&end_time=${endtime}&nocache=${randomParam}`;
-            script.onerror = function() {
-                shijian.value = '里程计算失败';
-            };
-            document.body.appendChild(script);
-            setTimeout(() => document.body.removeChild(script), 100);
+            let i = document.createElement('script');
+            // 加入随机参数防止缓存
+            i.src = "https://yingyan.baidu.com/api/v3/track/getdistance?callback=BaiDulicheng&ak=" + key.ak + "&service_id=" + key.service_id + "&entity_name=" + key.entity_name + "&start_time=" + key.start_time + "&end_time=" + endtime + "&nocache=" + randomParam;
+            document.body.appendChild(i);
+            document.body.removeChild(i);
         }
 
         function BaiDulicheng(j) {
-            try {
-                if (j.distance === undefined) {
-                    shijian.value = '无法计算里程';
-                    return;
-                }
-                
-                const distance = (j.distance / 1000).toFixed(1);
-                const duration = endtime - loctime[0];
-                const durationStr = formatDuration(duration);
-                
-                shijian.value = `总里程: ${distance}公里 | 总时间: ${durationStr} | 点击播放轨迹`;
-            } catch (e) {
-                console.error('里程计算错误:', e);
-                shijian.value = '里程计算出错';
-            }
+            j = j.distance / 1000;
+            j = j.toFixed(1);
+            k = endtime - loctime[0];
+            h = Math.floor((k % 86400) / 3600);
+            m = Math.floor(((k % 86400) % 3600) / 60);
+            s = Math.floor(((k % 86400) % 3600) % 60);
+            h = h ? h + '小时' : '';
+            m = m ? m + '分' : '';
+            s = s ? s + '秒' : '';
+            shijian.value = '行驶总里程：' + j + '公里，总时间：' + h + m + s;
         }
 
         function Play() {
-            if (!marker) return;
-            
             if (dj === 1) {
-                // 暂停
                 dj = 0;
                 marker.pauseMove();
-                shijian.value = '已暂停，点击继续播放';
-            } else if (dj === 2) {
-                // 重新播放
-                marker.moveTo(guiji[0]);
-                setTimeout(Go, 300);
-                dj = 1;
-                shijian.value = '正在播放，点击暂停';
             } else {
-                // 继续播放
-                marker.resumeMove();
+                if (dj === 2) {
+                    Go();
+                } else {
+                    marker.resumeMove();
+                }
                 dj = 1;
-                shijian.value = '正在播放，点击暂停';
             }
         }
-
-        // 初始加载数据
-        GetData();
     </script>
 </body>
 </html>
