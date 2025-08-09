@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -7,7 +8,7 @@
     <title>我的轨迹(百度)</title>
     <style>
         html, body, #container { margin: 0; height: 100%; }
-        #shijian { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 200; }
+       #shijian { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 200; line-height: 1.5; white-space: pre-line; }
         .aa { box-shadow: 0 0 3px 2px #A020F0; width: 20px; height: 20px; transform: rotate(45deg); }
         .qq { position: absolute; border-radius: 20px; transform: rotate(-45deg); top: -20px; left: -20px; }
         .time-display { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; z-index: 300; font-size: 14px; }
@@ -24,6 +25,7 @@
     </script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=84732843ede32ac29e2b96d7b13e8773"></script>
     <script>
+
         // 生成随机参数防止缓存
         const randomParam = Date.now();
         
@@ -35,6 +37,7 @@
         let endtime;
         let dj = 1;
         let marker;
+        let maxSpeed = 0; // 存储最高速度
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
@@ -44,6 +47,11 @@
                 guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
                 loctime.push(j.points[i].loc_time);
                 speed.push(j.points[i].speed);
+                // 计算最高速度
+                if(j.points[i].speed > maxSpeed) {
+                    maxSpeed = j.points[i].speed;
+                }
+
                 if (j.points[i + 1]) {
                     n = j.points[i + 1].loc_time - j.points[i].loc_time;
                     if (n > key.duan) {
@@ -165,7 +173,11 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            shijian.value = '坐标点:' + guiji.length + '个 | 行驶总里程:' + j + '公里 | 总时间:' + h + m + s;
+            // 计算平均车速 (总里程/总时间(小时))
+            let totalHours = k / 3600;
+            let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
+            shijian.value = '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + 
+                '\n平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
         }
 
         function Play() {
