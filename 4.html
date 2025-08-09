@@ -17,40 +17,34 @@
             width: 100%;
             z-index: 200;
         }
-        .avatar-container {
-            width: 40px;
-            height: 40px;
-            position: relative;
+        .aa {
+            box-shadow: 0 0 3px 2px #A020F0;
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
         }
-        .avatar-frame {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid #A020F0;
-            box-shadow: 0 0 5px 2px rgba(160, 32, 240, 0.5);
-            overflow: hidden;
+        .qq {
+            position: absolute;
+            border-radius: 20px;
+            transform: rotate(-45deg);
+            top: -20px;
+            left: -20px;
         }
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        #time-info {
+        .time-display {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 10px;
             border-radius: 5px;
-            z-index: 100;
+            z-index: 300;
             font-size: 14px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
-    <div id="time-info"></div>
+    <div class="time-display" id="timeInfo"></div>
     <input type="button" value="" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
@@ -99,8 +93,8 @@
 
             // 显示开始和结束时间
             const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
-            const endTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
-            document.getElementById('time-info').innerHTML = `开始时间: ${startTime}<br>结束时间: ${endTime}`;
+            const finishTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
+            document.getElementById('timeInfo').innerHTML = `开始时间: ${startTime}<br>结束时间: ${finishTime}`;
 
             if (key.qq) {
                 // 有QQ号就显示QQ头像
@@ -109,14 +103,8 @@
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
-                        content: `
-                            <div class="avatar-container">
-                                <div class="avatar-frame">
-                                    < img class="avatar-img" src="https://q.qlogo.cn/g?b=qq&nk=${key.qq}&s=100">
-                                </div>
-                            </div>
-                        `,
-                        offset: new AMap.Pixel(-20, -20)
+                        content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        offset: [-10, -24]
                     });
                 });
             } else {
