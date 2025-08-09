@@ -30,6 +30,7 @@
         let endtime;
         let dj = 1;
         let marker;
+        let maxSpeed = 0; // 存储最高速度
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
@@ -39,6 +40,11 @@
                 guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
                 loctime.push(j.points[i].loc_time);
                 speed.push(j.points[i].speed);
+                // 计算最高速度
+                if(j.points[i].speed > maxSpeed) {
+                    maxSpeed = j.points[i].speed;
+                }
+
                 if (j.points[i + 1]) {
                     n = j.points[i + 1].loc_time - j.points[i].loc_time;
                     if (n > key.duan) {
@@ -163,7 +169,7 @@
             // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标点:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + ' | 均速:' + avgSpeed + 'km/h';
+            shijian.value = '坐标:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + ' | 均速:' + avgSpeed + 'km/h | 最高:' + maxSpeed.toFixed(1) + 'km/h';
         }
 
         function Play() {
