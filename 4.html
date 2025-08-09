@@ -169,7 +169,8 @@
             // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + '\n均速:' + avgSpeed + 'km/h | 最高:' + maxSpeed.toFixed(1) + 'km/h';
+            shijian.value = '坐标:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + 
+                '\n均速:' + avgSpeed + 'km/h | 最高:' + maxSpeed.toFixed(1) + 'km/h';
         }
 
         function Play() {
