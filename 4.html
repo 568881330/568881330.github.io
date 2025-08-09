@@ -31,31 +31,22 @@
         let dj = 1;
         let marker;
 
-function BaiDu(j) {
-    t = JSON.stringify(j.points);
-    t = t.match(/(?<=de":)\d+\.\d{1,6}/g);
-    let n;
-    let maxSpeed = 0; // 新增：用于记录最高速度
-    for (let i = 0; i < j.points.length; i++) {
-        guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
-        loctime.push(j.points[i].loc_time);
-        speed.push(j.points[i].speed);
-        // 新增：记录最高速度
-        if(j.points[i].speed > maxSpeed) {
-            maxSpeed = j.points[i].speed;
-        }
-        if (j.points[i + 1]) {
-            n = j.points[i + 1].loc_time - j.points[i].loc_time;
-            if (n > key.duan) {
-                endtime = j.points[i].loc_time;
-                break;
+        function BaiDu(j) {
+            t = JSON.stringify(j.points);
+            t = t.match(/(?<=de":)\d+\.\d{1,6}/g);
+            let n;
+            for (let i = 0; i < j.points.length; i++) {
+                guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
+                loctime.push(j.points[i].loc_time);
+                speed.push(j.points[i].speed);
+                if (j.points[i + 1]) {
+                    n = j.points[i + 1].loc_time - j.points[i].loc_time;
+                    if (n > key.duan) {
+                        endtime = j.points[i].loc_time;
+                        break;
+                    }
+                }
             }
-        }
-    }
-    // 将最高速度保存到全局变量
-    window.maxSpeed = maxSpeed.toFixed(1);
-    // 其余代码不变...
-}
             n = n ? n : key.duan + 1;
             if (n > key.duan || j.end_point.loc_time === j.points[j.points.length - 1].loc_time) {
                 endtime = endtime ? endtime : j.end_point.loc_time;
@@ -172,7 +163,7 @@ function BaiDu(j) {
             // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + ' | 均速:' + avgSpeed + 'km/h' | 最高:' + window.maxSpeed + 'km/h';
+            shijian.value = '坐标点:' + guiji.length + '个 | 里程:' + j + '公里 | 时间:' + h + m + s + ' | 均速:' + avgSpeed + 'km/h';
         }
 
         function Play() {
