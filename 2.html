@@ -10,10 +10,12 @@
         #shijian { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 200; }
         .aa { box-shadow: 0 0 3px 2px #A020F0; width: 20px; height: 20px; transform: rotate(45deg); }
         .qq { position: absolute; border-radius: 20px; transform: rotate(-45deg); top: -20px; left: -20px; }
+        .time-display { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; z-index: 300; font-size: 14px; }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
+    <div class="time-display" id="timeInfo"></div>
     <input type="button" value="" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
@@ -27,6 +29,7 @@
         let speed = [];
         let endtime;
         let dj = 1;
+        let marker;
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
@@ -57,6 +60,11 @@
         function GaoDe() {
             container.innerHTML = '有' + guiji.length + '个坐标点';
             map = new AMap.Map("container", { zoom: 17, center: guiji[0] });
+
+            // 显示开始和结束时间
+            const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
+            const finishTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
+            document.getElementById('timeInfo').innerHTML = `开始时间: ${startTime}<br>结束时间: ${finishTime}`;
 
             if (key.qq) {
                 // 有QQ号就显示QQ头像
@@ -152,7 +160,7 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            shijian.value = '行驶总里程：' + j + '公里，总时间：' + h + m + s;
+            shijian.value = '坐标点:' + guiji.length + '个 | 行驶总里程:' + j + '公里 | 总时间:' + h + m + s;
         }
 
         function Play() {
