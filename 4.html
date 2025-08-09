@@ -16,9 +16,12 @@
             left: 0;
             width: 100%;
             z-index: 200;
-            padding: 8px;
+            padding: 10px;
             box-sizing: border-box;
             background: rgba(255,255,255,0.9);
+            font-size: 14px;
+            text-align: center;
+            border-top: 1px solid #ddd;
         }
         .aa {
             box-shadow: 0 0 3px 2px #A020F0;
@@ -38,28 +41,18 @@
             top: 10px;
             right: 10px;
             background: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 5px;
             z-index: 300;
             font-size: 14px;
-        }
-        .point-count {
-            position: absolute;
-            top: 70px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
-            z-index: 300;
-            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
-    <div class="point-count" id="pointCount"></div>
-    <input type="button" value="" id="shijian" onclick="Play()">
+    <input type="button" id="shijian" onclick="Play()">
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         // 生成随机参数防止缓存
@@ -100,9 +93,6 @@
         }
 
         function GaoDe() {
-            // 显示坐标点数量
-            document.getElementById('pointCount').innerHTML = '坐标点数量: ' + guiji.length;
-            
             map = new AMap.Map("container", {
                 zoom: 17,
                 center: guiji[0]
@@ -184,7 +174,6 @@
         function GetData() {
             console.log('获取云端数据' + pi);
             let i = document.createElement('script');
-            // 加入随机参数防止缓存
             i.src = "https://yingyan.baidu.com/api/v3/track/gettrack?callback=BaiDu&coord_type_output=gcj02&page_size=600&page_index=" + pi + "&" + location.search.substr(1) + "&nocache=" + randomParam;
             document.body.appendChild(i);
             document.body.removeChild(i);
@@ -194,7 +183,6 @@
         function Getlicheng() {
             console.log('获取里程数据');
             let i = document.createElement('script');
-            // 加入随机参数防止缓存
             i.src = "https://yingyan.baidu.com/api/v3/track/getdistance?callback=BaiDulicheng&ak=" + key.ak + "&service_id=" + key.service_id + "&entity_name=" + key.entity_name + "&start_time=" + key.start_time + "&end_time=" + endtime + "&nocache=" + randomParam;
             document.body.appendChild(i);
             document.body.removeChild(i);
@@ -210,7 +198,7 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            shijian.value = guiji.length + '个坐标点 | 行驶总里程：' + j + '公里，总时间：' + h + m + s;
+            shijian.value = '坐标点: ' + guiji.length + '个 | 里程: ' + j + '公里 | 耗时: ' + h + m + s;
         }
 
         function Play() {
