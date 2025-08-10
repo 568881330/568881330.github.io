@@ -121,7 +121,7 @@
             // 显示开始和结束时间
             const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
             const finishTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
-            document.getElementById('timeInfo').innerHTML = `开始时间: ${startTime}<br>结束时间: ${finishTime}`;
+            document.getElementById('timeInfo').innerHTML = `开始: ${startTime}<br>结束: ${finishTime}`;
 
             if (key.qq) {
                 // 有QQ号就显示QQ头像
