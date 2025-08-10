@@ -7,11 +7,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的轨迹(百度)</title>
     <style>
-        html, body, #container { margin: 0; height: 100%; }
-       #shijian { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 200; line-height: 1.5; white-space: pre-line; }
-        .aa { box-shadow: 0 0 3px 2px #A020F0; width: 20px; height: 20px; transform: rotate(45deg); }
-        .qq { position: absolute; border-radius: 20px; transform: rotate(-45deg); top: -20px; left: -20px; }
-        .time-display { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; z-index: 300; font-size: 14px; }
+        html, body, #container {
+            margin: 0;
+            height: 100%;
+        }
+        #shijian {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        .aa {
+            box-shadow: 0 0 3px 2px #A020F0;
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+        }
+        .qq {
+            position: absolute;
+            border-radius: 20px;
+            transform: rotate(-45deg);
+            top: -20px;
+            left: -20px;
+        }
+        .time-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 300;
+            font-size: 14px;
+        }
+        .max-speed-marker {
+            background: red;
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        .max-speed-label {
+            background: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -22,7 +68,6 @@
     <script>
         // 生成随机参数防止缓存
         const randomParam = Date.now();
-        
         let key = JSON.parse('{"' + location.search.substr(1).replace(/\=/g, '":"').replace(/&/g, '","') + '"}');
         let pi = 1;
         let guiji = [];
@@ -32,6 +77,8 @@
         let dj = 1;
         let marker;
         let maxSpeed = 0; // 存储最高速度
+        let maxSpeedIndex = 0; // 存储最高速度对应的坐标点索引
+        let map;
 
         function BaiDu(j) {
             t = JSON.stringify(j.points);
@@ -44,6 +91,7 @@
                 // 计算最高速度
                 if(j.points[i].speed > maxSpeed) {
                     maxSpeed = j.points[i].speed;
+                    maxSpeedIndex = i; // 更新最高速度对应的索引
                 }
 
                 if (j.points[i + 1]) {
@@ -66,7 +114,10 @@
 
         function GaoDe() {
             container.innerHTML = '有' + guiji.length + '个坐标点';
-            map = new AMap.Map("container", { zoom: 17, center: guiji[0] });
+            map = new AMap.Map("container", {
+                zoom: 17,
+                center: guiji[0]
+            });
 
             // 显示开始和结束时间
             const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
@@ -112,6 +163,20 @@
                 strokeWeight: 2
             });
 
+            // 添加最高速度标记
+            let maxSpeedMarker = new AMap.Marker({
+                map: map,
+                position: guiji[maxSpeedIndex],
+                content: '<div class="max-speed-marker"></div>',
+                offset: new AMap.Pixel(-8, -8)
+            });
+
+            // 添加最高速度标记的标签
+            maxSpeedMarker.setLabel({
+                content: "<div class='max-speed-label'>最高车速: " + maxSpeed.toFixed(1) + "km/h</div>",
+                direction: "top"
+            });
+
             marker.on('moving', function (e) {
                 passedPolyline.setPath(e.passedPath);
                 map.setCenter(e.passedPos);
@@ -135,7 +200,10 @@
         }
 
         function Go() {
-            marker.moveAlong(guiji, { duration: 50, autoRotation: at });
+            marker.moveAlong(guiji, {
+                duration: 50,
+                autoRotation: at
+            });
         }
 
         function GetData() {
@@ -170,8 +238,7 @@
             // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + 
-                '\n平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
+            shijian.value = '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + '\n平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
         }
 
         function Play() {
