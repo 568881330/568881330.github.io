@@ -10,7 +10,7 @@
             margin: 0;
             height: 100%;
         }
-        #shijian {
+        .status-bar {
             position: absolute;
             bottom: 0;
             left: 0;
@@ -18,6 +18,23 @@
             z-index: 200;
             line-height: 1.5;
             white-space: pre-line;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .time-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 300;
+            font-size: 14px;
         }
         .aa {
             box-shadow: 0 0 3px 2px #A020F0;
@@ -31,16 +48,6 @@
             transform: rotate(-45deg);
             top: -20px;
             left: -20px;
-        }
-        .time-display {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
-            z-index: 300;
-            font-size: 14px;
         }
         .max-speed-marker {
             background: red;
@@ -62,10 +69,9 @@
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
-    <input type="button" value="" id="shijian" onclick="Play()">
+    <div id="shijian" class="status-bar" onclick="Play()"></div>
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
-        // 生成随机参数防止缓存
         const randomParam = Date.now();
         let key = JSON.parse('{"' + location.search.substr(1).replace(/\=/g, '":"').replace(/&/g, '","') + '"}');
         let pi = 1;
@@ -75,8 +81,8 @@
         let endtime;
         let dj = 1;
         let marker;
-        let maxSpeed = 0; // 存储最高速度
-        let maxSpeedIndex = 0; // 存储最高速度对应的坐标点索引
+        let maxSpeed = 0;
+        let maxSpeedIndex = 0;
         let map;
 
         function BaiDu(j) {
@@ -87,12 +93,10 @@
                 guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
                 loctime.push(j.points[i].loc_time);
                 speed.push(j.points[i].speed);
-                // 计算最高速度
-                if(j.points[i].speed > maxSpeed) {
+                if (j.points[i].speed > maxSpeed) {
                     maxSpeed = j.points[i].speed;
-                    maxSpeedIndex = i; // 更新最高速度对应的索引
+                    maxSpeedIndex = i;
                 }
-
                 if (j.points[i + 1]) {
                     n = j.points[i + 1].loc_time - j.points[i].loc_time;
                     if (n > key.duan) {
@@ -113,30 +117,24 @@
 
         function GaoDe() {
             container.innerHTML = '有' + guiji.length + '个坐标点';
-            map = new AMap.Map("container", {
-                zoom: 17,
-                center: guiji[0]
-            });
+            map = new AMap.Map("container", { zoom: 17, center: guiji[0] });
 
-            // 显示开始和结束时间
-            const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', {hour12: false});
-            const finishTime = new Date(endtime * 1000).toLocaleString('zh', {hour12: false});
+            const startTime = new Date(loctime[0] * 1000).toLocaleString('zh', { hour12: false });
+            const finishTime = new Date(endtime * 1000).toLocaleString('zh', { hour12: false });
             document.getElementById('timeInfo').innerHTML = `开始: ${startTime}<br>结束: ${finishTime}`;
 
             if (key.qq) {
-                // 有QQ号就显示QQ头像
-                at = false; // 不旋转
+                at = false;
                 AMap.plugin('AMap.MoveAnimation', function () {
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
-                        content: "<div class=\"aa\"><img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
                         offset: [-10, -24]
                     });
                 });
             } else {
-                // 没QQ就加载小车
-                at = true; // 旋转
+                at = true;
                 AMap.plugin('AMap.MoveAnimation', function () {
                     marker = new AMap.Marker({
                         map: map,
@@ -162,7 +160,6 @@
                 strokeWeight: 2
             });
 
-            // 添加最高速度标记
             let maxSpeedMarker = new AMap.Marker({
                 map: map,
                 position: guiji[maxSpeedIndex],
@@ -170,7 +167,6 @@
                 offset: new AMap.Pixel(-8, -8)
             });
 
-            // 添加最高速度标记的标签
             maxSpeedMarker.setLabel({
                 content: "<div class='max-speed-label'>最高车速: " + maxSpeed.toFixed(1) + "km/h</div>",
                 direction: "top"
@@ -199,16 +195,12 @@
         }
 
         function Go() {
-            marker.moveAlong(guiji, {
-                duration: 50,
-                autoRotation: at
-            });
+            marker.moveAlong(guiji, { duration: 50, autoRotation: at });
         }
 
         function GetData() {
             console.log('获取云端数据' + pi);
             let i = document.createElement('script');
-            // 加入随机参数防止缓存
             i.src = "https://yingyan.baidu.com/api/v3/track/gettrack?callback=BaiDu&coord_type_output=gcj02&page_size=600&page_index=" + pi + "&" + location.search.substr(1) + "&nocache=" + randomParam;
             document.body.appendChild(i);
             document.body.removeChild(i);
@@ -218,7 +210,6 @@
         function Getlicheng() {
             console.log('获取里程数据');
             let i = document.createElement('script');
-            // 加入随机参数防止缓存
             i.src = "https://yingyan.baidu.com/api/v3/track/getdistance?callback=BaiDulicheng&ak=" + key.ak + "&service_id=" + key.service_id + "&entity_name=" + key.entity_name + "&start_time=" + key.start_time + "&end_time=" + endtime + "&nocache=" + randomParam;
             document.body.appendChild(i);
             document.body.removeChild(i);
@@ -234,10 +225,11 @@
             h = h ? h + '小时' : '';
             m = m ? m + '分' : '';
             s = s ? s + '秒' : '';
-            // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + '\n平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
+            document.getElementById('shijian').innerHTML = 
+                '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + 
+                '<br>平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
         }
 
         function Play() {
