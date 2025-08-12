@@ -17,7 +17,15 @@
             width: 100%;
             z-index: 200;
             line-height: 1.5;
-            white-space: pre-line;
+            resize: none;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: center;
         }
         .aa {
             box-shadow: 0 0 3px 2px #A020F0;
@@ -62,7 +70,7 @@
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
-    <input type="button" value="" id="shijian" onclick="Play()">
+    <textarea id="shijian" onclick="Play()" readonly></textarea>
     <script type="text/javascript">
         window._AMapSecurityConfig = {
             securityJsCode:'2dcc1ad5d9ecc87e160948a41b138223',
@@ -242,9 +250,8 @@
             // 计算平均车速 (总里程/总时间(小时))
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            shijian.value = '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + '\n平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
+            shijian.value = `坐标点:${guiji.length}个 | 行驶${j}公里 | 行驶${h}${m}${s}\n平均车速:${avgSpeed}km/h | 最高车速:${maxSpeed.toFixed(1)}km/h`;
         }
-
         function Play() {
             if (dj === 1) {
                 dj = 0;
