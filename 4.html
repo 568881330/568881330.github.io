@@ -10,21 +10,22 @@
             margin: 0;
             height: 100%;
         }
-        .status-bar {
+        #shijian {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             z-index: 200;
             line-height: 1.5;
-            white-space: pre-line;
+            resize: none;
+            border: none;
             background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
+            padding: 8px;
             box-sizing: border-box;
             cursor: pointer;
-            border-top: 1px solid #ddd;
-            text-align: center;
             font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: center;
         }
         .time-display {
             position: absolute;
@@ -69,7 +70,7 @@
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
-    <div id="shijian" class="status-bar" onclick="Play()"></div>
+    <textarea id="shijian" onclick="Play()" readonly></textarea>
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         const randomParam = Date.now();
@@ -227,9 +228,7 @@
             s = s ? s + '秒' : '';
             let totalHours = k / 3600;
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
-            document.getElementById('shijian').innerHTML = 
-                '坐标点:' + guiji.length + '个 | 行驶' + j + '公里 | 行驶' + h + m + s + 
-                '<br>平均车速:' + avgSpeed + 'km/h | 最高车速:' + maxSpeed.toFixed(1) + 'km/h';
+            shijian.value = `坐标点:${guiji.length}个 | 行驶${j}公里 | 行驶${h}${m}${s}\n平均车速:${avgSpeed}km/h | 最高车速:${maxSpeed.toFixed(1)}km/h`;
         }
 
         function Play() {
