@@ -65,12 +65,34 @@
             font-size: 12px;
             white-space: nowrap;
         }
+        .refresh-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .refresh-icon {
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
     <textarea id="shijian" onclick="Play()" readonly></textarea>
+    <div class="refresh-btn" onclick="refreshPage()">
+        <span class="refresh-icon">↻</span>
+    </div>
+    
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         // 生成随机参数防止缓存
@@ -95,6 +117,7 @@
                 guiji.push([1 * t[2 * i + 1], 1 * t[2 * i]]);
                 loctime.push(j.points[i].loc_time);
                 speed.push(j.points[i].speed);
+                
                 // 计算最高速度
                 if(j.points[i].speed > maxSpeed) {
                     maxSpeed = j.points[i].speed;
@@ -138,7 +161,7 @@
                     marker = new AMap.Marker({
                         map: map,
                         position: guiji[0],
-                        content: "<div class=\"aa\"><img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
+                        content: "<div class=\"aa\">< img class=\"qq\" src=\"http://q4.qlogo.cn/g?b=qq&nk=" + key.qq + "&s=40\"></div>",
                         offset: [-10, -24]
                     });
                 });
@@ -247,6 +270,7 @@
             let avgSpeed = totalHours > 0 ? (j / totalHours).toFixed(1) : 0;
             shijian.value = `坐标点:${guiji.length}个 | 行驶${j}公里 | 行驶${h}${m}${s}\n平均车速:${avgSpeed}km/h | 最高车速:${maxSpeed.toFixed(1)}km/h`;
         }
+
         function Play() {
             if (dj === 1) {
                 dj = 0;
@@ -259,6 +283,10 @@
                 }
                 dj = 1;
             }
+        }
+
+        function refreshPage() {
+            location.reload();
         }
     </script>
 </body>
