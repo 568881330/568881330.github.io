@@ -65,12 +65,34 @@
             font-size: 12px;
             white-space: nowrap;
         }
+        .refresh-btn {
+            position: absolute;
+            bottom: 180px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .refresh-icon {
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <div id='container'>加载中...</div>
     <div class="time-display" id="timeInfo"></div>
     <textarea id="shijian" onclick="Play()" readonly></textarea>
+    <div class="refresh-btn" onclick="refreshPage()">
+        <span class="refresh-icon">↻</span>
+    </div>
+    
     <script src='https://webapi.amap.com/maps?v=2.0&key=47d57deacf67daf4fe68b31c3dcdc253'></script>
     <script>
         // 生成随机参数防止缓存
@@ -259,6 +281,10 @@
                 }
                 dj = 1;
             }
+        }
+
+        function refreshPage() {
+            location.reload();
         }
     </script>
 </body>
